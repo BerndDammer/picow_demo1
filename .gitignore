@@ -11,21 +11,32 @@ elf2uf2
 .project
 Makefile
 cmake_install.cmake
-
 *.elf
 *.map
-*.bin
+*.lst
+*.txt
+
+#*.uf2
+
+
+_deps
+picotool
+pioasm-install
+
+*.ninja*.*
+build.ninja
+*.ld
+
 *.dis
 *.hex
-*.uf2
-*.lst
+*.bin
 
-*ninja*.*
-*ninja*
-
-
-/*.txt
-# ! src/CMakeLists.txt
+makefile
 
 CMakeCache.txt
 /build/
+
+*.cmd
+*.sh
+
+git_status.lst

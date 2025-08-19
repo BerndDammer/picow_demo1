@@ -7,12 +7,16 @@ set(CMAKE_CXX_STANDARD 17)
 
 # Initialise pico_sdk from installed location
 # (note this can come from environment, CMake cache etc)
-set(PICO_SDK_PATH ${PICO_SDK_PATH})
+set(PICO_SDK_PATH "d:/pico_work/pico-sdk")
 
-
+set(PICO_BOARD pico_w CACHE STRING "Board type")
 
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
+
+if (PICO_SDK_VERSION_STRING VERSION_LESS "1.4.0")
+  message(FATAL_ERROR "Raspberry Pi Pico SDK version 1.4.0 (or later) required. Your version is ${PICO_SDK_VERSION_STRING}")
+endif()
 
 project(blinkw C CXX ASM)
 
@@ -22,9 +26,6 @@ pico_sdk_init()
 # Add executable. Default name is the project name, version 0.1
 
 add_executable(blinkw main.c )
-# note cmake policy is to use absolute paths for interface libraries.
-
-
 
 pico_set_program_name(blinkw "blinkw")
 pico_set_program_version(blinkw "0.1")
@@ -34,18 +35,27 @@ target_sources(blinkw PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/blinker.c
         )
 
+
 pico_enable_stdio_uart(blinkw 1)
-pico_enable_stdio_usb(blinkw 1)
+pico_enable_stdio_usb(blinkw 0)
 
 # Add the standard library to the build
-target_link_libraries(blinkw 
-	pico_stdlib
-    hardware_clocks
-    pico_cyw43_arch_none     # we need Wifi to access the GPIO, but we don't need anything else
+target_link_libraries(blinkw
+        pico_stdlib)
 
+# Add the standard include files to the build
+target_include_directories(blinkw PRIVATE
+  ${CMAKE_CURRENT_LIST_DIR}
+  ${CMAKE_CURRENT_LIST_DIR}/.. # for our common lwipopts or any other standard includes, if required
+)
+
+# Add any user requested libraries
+target_link_libraries(blinkw 
+    pico_stdlib
+    hardware_clocks
+    pico_cyw43_arch_none 
 )
 
 
-pico_add_extra_outputs(blinkw)
-
+# pico_add_extra_outputs(blinkw)
 
