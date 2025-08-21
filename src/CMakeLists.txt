@@ -57,5 +57,5 @@ target_link_libraries(blinkw
 )
 
 
-# pico_add_extra_outputs(blinkw)
+pico_add_extra_outputs(blinkw)
 
